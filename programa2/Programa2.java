@@ -5,17 +5,16 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Formatter;
+import java.util.List;
 
 import javax.swing.JOptionPane;
-
 import programa1.Beneficiario;
 
 public class Programa2 {
 
-	private static Beneficiario vetBen[];
-	// variavel para guardar a quantidade de Beneficiarios
-	private static int tam = 0;
+	private static List<Beneficiario> listaOrd = new ArrayList<Beneficiario>();
 
 	public static void main(String[] args) {
 
@@ -33,7 +32,8 @@ public class Programa2 {
 				addben();
 				break;
 			case 2:
-				remove(3);
+				int n = Integer.parseInt(JOptionPane.showInputDialog(null, "Posição"));
+				listaOrd.remove(n);
 				break;
 			case 3:
 				acima40();
@@ -57,38 +57,14 @@ public class Programa2 {
 
 	private static void ler() {
 
-		vetBen = new Beneficiario[5];
-
 		try {
 			BufferedReader in = new BufferedReader(new FileReader("src/arquivo1.txt"));
 			String linha = in.readLine();
 			while (linha != null) {
-				
-				/*
-				Joao	25	2	"Ana,12,Marcos,11"	13230
 
-				String s[] = linha.split("\t");
-				s[0] = "Joao"
-				s[1] = "25"
-				s[2] = "2"
-				s[3] = "[Ana,12,Marcos,11]"
-				s[4] = "13230"
-				
-				 0   1   2    3    4    5 
-				Ana,12,Marcos,11,SJSJS, 23 
-				
-				String deps[] = s[3].split(","); 
-				for(2, i++)
-					nomed = deps[i];
-					idaded = deps[i+1];
-					b.addDep(nomed, idaded);
-					i++;
-				 
-				*/
-				
 				Beneficiario b = new Beneficiario();
 
-				add(b);
+				listaOrd.add(b);
 
 				String nome = linha;
 				b.setNome(nome);
@@ -123,21 +99,16 @@ public class Programa2 {
 	private static void grava() {
 		try {
 			PrintWriter out = new PrintWriter(new FileWriter("src/arquivo1.txt"));
-			
-			/*
-			while(i < tam)
-				[A, null, C, null, null]
-				if(vet[i] != null)
-					// operaçoes
-					i++;
-			*/
-			
-			for (int i = 0; vetBen[i] != null && i < vetBen.length; i++) {
-				out.print(vetBen[i].getNome() + "\n" + vetBen[i].getIdade() + "\n" + vetBen[i].getQnteDep() + "\n");
-				for (int j = 0; vetBen[i].getDeps() != null && j < vetBen[i].getQnteDep(); j++) {
-					out.print(vetBen[i].getDeps()[j].getNome() + "\n" + vetBen[i].getDeps()[j].getIdade() + "\n");
+			for (int i = 0; i < listaOrd.size(); i++) {
+				out.print(listaOrd.get(i).getNome() + "\n" + listaOrd.get(i).getIdade() + "\n"
+						+ listaOrd.get(i).getQnteDep() + "\n");
+				for (int j = 0; listaOrd.get(i).getDeps() != null && j < listaOrd.get(i).getQnteDep(); j++) {
+					out.print(listaOrd.get(i).getDeps()[j].getNome() + "\n" + listaOrd.get(i).getDeps()[j].getIdade()
+							+ "\n");
+					System.out.println(listaOrd.get(i).getDeps()[j].getNome() + "\n"
+							+ listaOrd.get(i).getDeps()[j].getIdade() + "\n");
 				}
-				out.print(vetBen[i].getValPlano() + "\n");
+				out.print(listaOrd.get(i).getValPlano() + "\n");
 			}
 			out.close();
 		} catch (Exception e) {
@@ -146,45 +117,26 @@ public class Programa2 {
 
 	}
 
-	private static void remove(int MCposi) {
-
-		vetBen[MCposi] = null;
-		tam--;
-
-	}
-
 	private static void addben() {
-		String nomeB = "vazio";
 
-		while (!nomeB.equals("xxx") && !nomeB.equals("XXX") && vetBen.length > tam) {
+		String nomeB = JOptionPane.showInputDialog(null, "Nome: ");
 
-			nomeB = JOptionPane.showInputDialog(null, "Nome: ");
+		int idadeB = Integer.parseInt(JOptionPane.showInputDialog(null, "Idade: "));
+		int qnt = Integer.parseInt(JOptionPane.showInputDialog(null, "Quantidade de dependentes: "));
+		double val = Double.parseDouble(JOptionPane.showInputDialog(null, "Valor do plano: "));
 
-			if (!nomeB.equals("xxx") && !nomeB.equals("XXX")) {
+		Beneficiario b = new Beneficiario(nomeB, idadeB, qnt, val);
 
-				int idadeB = Integer.parseInt(JOptionPane.showInputDialog(null, "Idade: "));
-				int qnt = Integer.parseInt(JOptionPane.showInputDialog(null, "Quantidade de dependentes: "));
-				double val = Double.parseDouble(JOptionPane.showInputDialog(null, "Valor do plano: "));
+		for (int i = 0; i < qnt; i++) {
 
-				Beneficiario b = new Beneficiario(nomeB, idadeB, qnt, val);
+			String nomeD = JOptionPane.showInputDialog(null, "Nome Dependente " + (i + 1) + ": ");
+			int idadeD = Integer.parseInt(JOptionPane.showInputDialog(null, "Idade Dependente " + (i + 1) + ": "));
 
-				for (int i = 0; i < qnt; i++) {
-
-					String nomeD = JOptionPane.showInputDialog(null, "Nome Dependente " + (i + 1) + ": ");
-					int idadeD = Integer
-							.parseInt(JOptionPane.showInputDialog(null, "Idade Dependente " + (i + 1) + ": "));
-
-					b.addDep(nomeD, idadeD);
-
-				}
-
-				// O for abaixo garante que um Beneficiario novo seja alocado na primeira
-				// posicao nulla do vetBen
-				add(b);
-
-			}
+			b.addDep(nomeD, idadeD);
 
 		}
+
+		listaOrd.add(b);
 
 	}
 
@@ -193,29 +145,29 @@ public class Programa2 {
 		System.out.println(
 				"Empregados com a maior e a menor média de idades entre seus integrantes (beneficiário e dependentes)");
 
-		int maior = vetBen[0].getIdade();
-		String maiorNome = vetBen[0].getNome();
-		int menor = vetBen[0].getIdade();
-		String menorNome = vetBen[0].getNome();
+		int maior = listaOrd.get(0).getIdade();
+		String maiorNome = listaOrd.get(0).getNome();
+		int menor = listaOrd.get(0).getIdade();
+		String menorNome = listaOrd.get(0).getNome();
 
-		for (int i = 0; i < vetBen.length; i++) {
-			if (vetBen[i] != null && vetBen[i].getIdade() > maior) {
-				maior = vetBen[i].getIdade();
-				maiorNome = vetBen[i].getNome();
+		for (int i = 0; i < listaOrd.size(); i++) {
+			if (listaOrd.get(i).getIdade() > maior) {
+				maior = listaOrd.get(i).getIdade();
+				maiorNome = listaOrd.get(i).getNome();
 			}
-			if (vetBen[i] != null && vetBen[i].getIdade() < menor) {
-				menor = vetBen[i].getIdade();
-				menorNome = vetBen[i].getNome();
+			if (listaOrd.get(i).getIdade() < menor) {
+				menor = listaOrd.get(i).getIdade();
+				menorNome = listaOrd.get(i).getNome();
 			}
-			for (int j = 0; vetBen[i] != null && j < vetBen[i].getQnteDep(); j++) {
+			for (int j = 0; j < listaOrd.get(i).getQnteDep(); j++) {
 
-				if (vetBen[i] != null && vetBen[i].getDeps()[j].getIdade() > maior) {
-					maior = vetBen[i].getDeps()[j].getIdade();
-					maiorNome = vetBen[i].getDeps()[j].getNome();
+				if (listaOrd.get(i).getDeps()[j].getIdade() > maior) {
+					maior = listaOrd.get(i).getDeps()[j].getIdade();
+					maiorNome = listaOrd.get(i).getDeps()[j].getNome();
 				}
-				if (vetBen[i] != null && vetBen[i].getDeps()[j].getIdade() < menor) {
-					menor = vetBen[i].getDeps()[j].getIdade();
-					menorNome = vetBen[i].getDeps()[j].getNome();
+				if (listaOrd.get(i).getDeps()[j].getIdade() < menor) {
+					menor = listaOrd.get(i).getDeps()[j].getIdade();
+					menorNome = listaOrd.get(i).getDeps()[j].getNome();
 				}
 			}
 		}
@@ -228,10 +180,8 @@ public class Programa2 {
 
 		System.out.println("Atualizar todos os beneficiários com aumento de 5% no valor do plano.");
 
-		for (int i = 0; i < vetBen.length; i++) {
-			if (vetBen[i] != null)
-				vetBen[i].setValPlano(vetBen[i].getValPlano() * 1.05);
-		}
+		for (int i = 0; i < listaOrd.size(); i++)
+			listaOrd.get(i).setValPlano(listaOrd.get(i).getValPlano() * 1.05);
 
 	}
 
@@ -239,14 +189,14 @@ public class Programa2 {
 
 		System.out.println("Beneficiários e dependentes que possuem idades acima de 40 anos.");
 
-		for (int i = 0; i < vetBen.length; i++) {
-			if (vetBen[i] != null && vetBen[i].getIdade() > 40) {
-				System.out.println(vetBen[i].getNome());
+		for (int i = 0; i < listaOrd.size(); i++) {
+			if (listaOrd.get(i).getIdade() > 40) {
+				System.out.println(listaOrd.get(i).getNome());
 			}
-			for (int j = 0; vetBen[i] != null && j < vetBen[i].getQnteDep(); j++) {
+			for (int j = 0; j < listaOrd.get(i).getQnteDep(); j++) {
 
-				if (vetBen[i].getDeps() != null && vetBen[i].getDeps()[j].getIdade() > 40) {
-					System.out.println(vetBen[i].getDeps()[j].getNome());
+				if (listaOrd.get(i).getDeps() != null && listaOrd.get(i).getDeps()[j].getIdade() > 40) {
+					System.out.println(listaOrd.get(i).getDeps()[j].getNome());
 				}
 			}
 		}
@@ -256,10 +206,8 @@ public class Programa2 {
 		try {
 			Formatter output = new Formatter("src/arquivo2.txt");
 			output.format("%s\t%s\n", "Nome do Beneficiário", "Valor do plano");
-			for (int i = 0; i < vetBen.length; i++) {
-				if (vetBen[i] != null) {
-					output.format("%s\t\t\t\t\t%.2f\n", vetBen[i].getNome(), vetBen[i].getValPlano());
-				}
+			for (int i = 0; i < listaOrd.size(); i++) {
+				output.format("%s\t\t\t\t\t%.2f\n", listaOrd.get(i).getNome(), listaOrd.get(i).getValPlano());
 			}
 			output.flush();
 			output.close();
@@ -269,22 +217,4 @@ public class Programa2 {
 
 	}
 
-	/**
-	 * Metodo para adicionar um Beneficiario b no vetBen
-	 * 
-	 * @param b
-	 */
-	private static void add(Beneficiario b) {
-		// acho uma posicao nulla no vetor e coloco esse novo Beneficiario
-		for (int i = 0; i < vetBen.length; i++) {
-			if (vetBen[i] == null) {
-				vetBen[i] = b;
-				tam++;
-				break;
-			}
-		}
-	}
-
 }
-
-

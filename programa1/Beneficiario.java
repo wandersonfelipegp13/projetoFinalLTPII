@@ -1,6 +1,6 @@
 package programa1;
 
-public class Beneficiario {
+public class Beneficiario implements Comparable<Beneficiario> {
 
 	private String nome;
 	private int idade;
@@ -91,6 +91,11 @@ public class Beneficiario {
 	@Override
 	public String toString() {
 		return nome + "\t" + idade + "\t" + qnteDep + "\t" + this.showDeps() + "\t" + valPlano;
+	}
+
+	@Override
+	public int compareTo(Beneficiario b) {
+		return this.nome.compareTo(b.getNome());
 	}
 
 }

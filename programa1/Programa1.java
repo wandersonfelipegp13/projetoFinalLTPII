@@ -9,7 +9,7 @@ public class Programa1 {
 
 	public static void main(String[] args) {
 
-		Beneficiario vetBen[] = new Beneficiario[2];
+		Beneficiario vetBen[] = new Beneficiario[5];
 		int tam = 0;
 
 		String nomeB = "vazio";
@@ -38,13 +38,13 @@ public class Programa1 {
 				vetBen[tam] = b;
 				tam++;
 				
-			} 
+			} else {
+				if (tam == vetBen.length) {
+					JOptionPane.showMessageDialog(null, "Vetor cheio!");
+				}
+			}
 		}
-		
-		if(tam == vetBen.length) {
-			JOptionPane.showMessageDialog(null, "Vetor cheio!");
-		}
-		
+
 		try {
 			PrintWriter out = new PrintWriter(new FileWriter("src/arquivo1.txt"));
 			for (int i = 0; i < tam; i++) {
@@ -56,10 +56,9 @@ public class Programa1 {
 			}
 			out.close();
 		} catch (Exception e) {
-			System.out.println("Erro na escrita do arquivo: " + e.getMessage());
+			System.out.println(e.getMessage());
 		}
 
 	}
-}
 
- 
+}
